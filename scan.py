@@ -5,6 +5,7 @@ from termcolor import colored
 from datetime import datetime
 from threading import *
 import time
+from tabulate import tabulate
 
 MAXPORT = 65535
 MINPORT = 0
@@ -31,24 +32,36 @@ def printendhost(host):
     now = datetime.now()
     print("Finished host scan on %s at %s" % (host, now))
 
-def printheader():
-    print("PORT\t\tSTATE")
-
 def scanner(host, port):
+    #socket.setdefaulttimeout(30)
+    banner = ""
+    state = ""
+    sock_type = "tcp"
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        socket.setdefaulttimeout(2)
-        sock.connect((host, port))
-        print(colored("%d\\tcp\t\topen" % port, "green"))
+        sock.settimeout(5)
+        try:
+            sock.connect((host, port))
+            banner = str(sock.recv(4096).decode("utf-8")).strip()
+        except:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((host, port))
+            request = "HEAD / HTTP/1.1\r\nHost:%s\r\n\r\n" % host
+            sock.send(request.encode())
+            response = sock.recv(4096)
+            banner = cleanlist(repr(response.decode("utf-8")).replace("\'", "").split("\\r\\n"))
+        state = "open"
     except:
-        print(colored("%d\\tcp\t\tclosed" % port, "red"))
+        banner = None
+        state = "closed"
     finally:
         sock.close()
+    return (port, sock_type, state, banner)
 
-def cleanportlist(portlist):
-    while("" in portlist):
-        portlist.remove("")
-    return portlist
+def cleanlist(list):
+    while("" in list):
+        list.remove("")
+    return list
 
 def main():
     parser = argparse.ArgumentParser()
@@ -58,7 +71,6 @@ def main():
     args = parser.parse_args()
     host = args.host
     ports = args.port
-    screen_lock = Semaphore(value=1)
 
     printstarthost(host)
     
@@ -71,27 +83,30 @@ def main():
     if ip != host:
         print("Host %s resolves to %s" % (host, ip))
 
+    results = []
+
     try:
         p = int(ports)
 
-        printheader()
         start_time = time.time()
-        #t = Thread(target=scanner, args=(host, int(p)))
-        #t.start()
-        scanner(host, p)
+        (rport, rsock_type, rstate, rbanner) = scanner(host, int(p))
+        result = [rport, rsock_type, rstate, rbanner]
+        results.append(result)
         end_time = time.time()
-
     except:
+        if ("," in ports and "-" in ports):
+            print("Invalid port option")
+            sys.exit(2)
+        
         if ("," in ports):
             portlist = ports.split(",")
-            portlist = cleanportlist(portlist)
+            portlist = cleanlist(portlist)
 
-            printheader()
             start_time = time.time()
             for p in portlist:
-                #t = Thread(target=scanner, args=(host, int(p)))
-                #t.start()
-                scanner(host, int(p))
+                (rport, rsock_type, rstate, rbanner) = scanner(host, int(p))
+                result = [rport, rsock_type, rstate, rbanner]
+                results.append(result)
             end_time = time.time()
 
         elif ("-" in ports):
@@ -109,18 +124,18 @@ def main():
                 print("Invalid port range")
                 sys.exit(3)
             
-            printheader()
             start_time = time.time()
-            for p in range(startport, endport):
-                #t = Thread(target=scanner, args=(host, int(p)))
-                #t.start()
-                scanner(host, int(p))
+            for p in range(startport, endport + 1):
+                (rport, rsock_type, rstate, rbanner) = scanner(host, int(p))
+                result = [rport, rsock_type, rstate, rbanner]
+                results.append(result)
             end_time = time.time()
 
         else:
             print("Invalid port option")
             sys.exit(2)
 
+    print(tabulate(results, headers=["PORT", "TYPE", "STATE", "BANNER"]))
     print("Elapsed: ", round(end_time - start_time, 3), "seconds")
     printendhost(host)
 
