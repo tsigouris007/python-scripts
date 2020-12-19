@@ -58,12 +58,12 @@ def ssh_connect(host, usr, pwd):
         return 0
     except Exception as e:
         err = str(e)
-        print(err)
         if "password refused" in err:
             return 1
         elif "establish connection" in err:
             return 2
         else:
+            print("Unknown error: ", err)
             return 3
         
 def main():
