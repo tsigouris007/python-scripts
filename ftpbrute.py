@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-import sys, pexpect, argparse, os.path
-from ftplib import FTP
+import sys, pexpect, argparse
 from os import path
+from ftplib import FTP
 
 def check_session():
     try:

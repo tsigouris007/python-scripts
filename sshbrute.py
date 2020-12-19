@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, pexpect, argparse, os.path
+import sys, pexpect, argparse
 from os import path
 from pexpect import pxssh
 
