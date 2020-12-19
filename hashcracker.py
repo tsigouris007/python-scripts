@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import hashlib, sys, argparse
+import hashlib, sys, argparse, time
 from os import path
 
 def check_session():
@@ -150,7 +150,10 @@ def main():
 
 if __name__ == "__main__":
     try:
+        start_time = time.time()
         main()
+        end_time = time.time()
+        print("Elapsed: ", round(end_time - start_time, 3), "seconds")
     except KeyboardInterrupt:
         print("Interrupted")
         sys.exit(1) 

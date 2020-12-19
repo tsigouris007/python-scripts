@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, pexpect, argparse
+import sys, pexpect, argparse, time
 from os import path
 from ftplib import FTP
 
@@ -180,7 +180,10 @@ def main():
 
 if __name__ == "__main__":
     try:
+        start_time = time.time()
         main()
+        end_time = time.time()
+        print("Elapsed: ", round(end_time - start_time, 3), "seconds")
     except KeyboardInterrupt:
         print("Interrupted")
         sys.exit(1)
