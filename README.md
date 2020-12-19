@@ -42,3 +42,7 @@ Usage examples:
 `python3 ftpbrute.py --host 192.168.1.1 --usr usersfile.txt --pwd passfile.txt --rst` *To reset your session*
 
 *Returns a successful user:pass combination.*
+
+## Hash Cracker
+
+*Under construction*
