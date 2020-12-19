@@ -23,6 +23,22 @@ Usage examples:
 
 `python3 sshbrute.py --host 192.168.1.1 --usr usersfile.txt --pwd passfile.txt`
 
+`python3 sshbrute.py --host 192.168.1.1 --port 22 --usr usersfile.txt --pwd passfile.txt` *To specify another SSH service port*
+
 `python3 sshbrute.py --host 192.168.1.1 --usr usersfile.txt --pwd passfile.txt --rst` *To reset your session*
+
+*Returns a successful user:pass combination.*
+
+## FTP Bruteforce
+
+Usage examples:
+
+`python3 ftpbrute.py --host 192.168.1.1 --usr usersfile.txt --pwd passfile.txt`
+
+`python3 ftpbrute.py --host 192.168.1.1 --port 21 --usr usersfile.txt --pwd passfile.txt` *To specify another FTP service port*
+
+`python3 ftpbrute.py --host 192.168.1.1 --usr usersfile.txt --pwd passfile.txt --anon` *To try anonymous login too*
+
+`python3 ftpbrute.py --host 192.168.1.1 --usr usersfile.txt --pwd passfile.txt --rst` *To reset your session*
 
 *Returns a successful user:pass combination.*

