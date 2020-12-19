@@ -2,7 +2,6 @@
 
 import sys, pexpect, argparse, os.path
 from os import path
-import itertools
 from pexpect import pxssh
 
 def check_session():
@@ -68,7 +67,7 @@ def ssh_connect(host, usr, pwd):
         
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--host", help="The host you want to scan", type=str, required=True)
+    parser.add_argument("--host", help="The host you want to perform bruteforce attack", type=str, required=True)
     parser.add_argument("--usr", help="The wordlist path containing usernames", type=str, required=True)
     parser.add_argument("--pwd", help="The wordlist path containing passwords", type=str, required=True)
     parser.add_argument("--rst", help="Flag to reset your session file", action="store_true", required=False)

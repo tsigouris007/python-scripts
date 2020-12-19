@@ -1,10 +1,7 @@
 #!/usr/bin/python
 
-import socket, sys, argparse, subprocess, platform
-from termcolor import colored
+import socket, sys, argparse, subprocess, platform, time
 from datetime import datetime
-from threading import *
-import time
 from tabulate import tabulate
 
 MAXPORT = 65535
