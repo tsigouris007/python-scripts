@@ -65,8 +65,8 @@ def cleanlist(list):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--host", help="The host you want to scan", type=str)
-    parser.add_argument("--port", help="The port you want to scan. You can use a single port, a comma delimited port list such as 22,25,80 or a port range such as 1-1000", type=str)
+    parser.add_argument("--host", help="The host you want to scan", type=str, required=True)
+    parser.add_argument("--port", help="The port you want to scan. You can use a single port, a comma delimited port list such as 22,25,80 or a port range such as 1-1000", type=str, required=True)
     
     args = parser.parse_args()
     host = args.host
