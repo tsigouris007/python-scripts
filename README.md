@@ -10,7 +10,9 @@ Some extra packages may need to be installed in order for these to work.
 Usage examples:
 
 `python3 portscan.py --host 192.168.1.1 --port 80`
+
 `python3 portscan.py --host 192.168.1.1 --port 21,22,25,80`
+
 `python3 portscan.py --host 192.168.1.1 --port 1-1000`
 
 *Returns a table of results similar to the nmap.*
@@ -20,6 +22,7 @@ Usage examples:
 Usage examples:
 
 `python3 sshbrute.py --host 192.168.1.1 --usr usersfile.txt --pwd passfile.txt`
+
 `python3 sshbrute.py --host 192.168.1.1 --usr usersfile.txt --pwd passfile.txt --rst` *To reset your session*
 
 *Returns a successful user:pass combination.*
