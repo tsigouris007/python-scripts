@@ -19,9 +19,12 @@ def set_mac(iface, mac):
     subprocess.call(["sudo", "ifconfig", iface, "up"])
 
 def get_current_mac(iface):
-    command = 'ifconfig ' + iface + ' | grep ether | grep - oE [0-9abcdef:]{17}'
-    out = subprocess.check_output(command, shell=True)
-    return out.decode("utf-8").strip()
+    try:
+        command = 'ifconfig ' + iface + ' | grep ether | grep -oE [0-9a-f:]{17}'
+        out = subprocess.check_output(command, shell=True).decode("utf-8").strip()
+        return out
+    except:
+        return False
 
 def validate_mac(mac):
     if re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", mac.lower()):
