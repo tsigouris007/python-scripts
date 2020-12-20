@@ -16,11 +16,10 @@ def get_dst_mac(ip):
     packet = broadcast/arp_req
     try:
         response = scapy.srp(packet, timeout=5, verbose=False)[0]
-        mac = response[0][1].hwsrc
+        return response[0][1].hwsrc
     except:
         print("Could not receive a proper response to the ARP packet.")
         return False
-    return mac
 
 def spoof_arp(dst, src):
     mac = get_dst_mac(dst)
