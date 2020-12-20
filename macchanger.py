@@ -14,9 +14,13 @@ def get_random_mac():
     return mac
 
 def set_mac(iface, mac):
-    subprocess.call(["sudo", "ifconfig", iface, "down"])
-    subprocess.call(["sudo", "ifconfig", iface, "hw", "ether", mac])
-    subprocess.call(["sudo", "ifconfig", iface, "up"])
+    try:
+        subprocess.call(["sudo", "ifconfig", iface, "down"])
+        subprocess.call(["sudo", "ifconfig", iface, "hw", "ether", mac])
+        subprocess.call(["sudo", "ifconfig", iface, "up"])
+        return True
+    except:
+        return False
 
 def get_current_mac(iface):
     try:
@@ -56,7 +60,8 @@ def main():
 
         if args.r:
             new_mac = get_random_mac()
-            set_mac(iface, new_mac)
+            while not set_mac(iface, new_mac):
+                pass
 
         if args.n != None:
             new_mac = args.n
