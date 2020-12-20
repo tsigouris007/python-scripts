@@ -88,6 +88,8 @@ Usage examples:
 
 *Display your current MAC Address*
 
+`python3 hashcracker.py`
+
 `python3 hashcracker.py --c`
 
 *Specify an interface*
