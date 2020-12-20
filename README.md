@@ -24,7 +24,7 @@ Usage examples:
 
 *Returns a table of results similar to the nmap.*
 
-## SSH Bruteforce
+## SSH Bruteforcer
 
 Usage examples:
 
@@ -40,7 +40,7 @@ Usage examples:
 
 *Returns a successful user:pass combination.*
 
-## FTP Bruteforce
+## FTP Bruteforcer
 
 Usage examples:
 
@@ -68,7 +68,7 @@ Usage examples:
 
 *Returns a successful plaintext string if cracked*
 
-## Hash Bruteforce
+## Hash Bruteforcer
 
 **Available methods md5, sha1, sha256, sha512**
 
@@ -103,3 +103,9 @@ Usage examples:
 *Manually set a MAC Address on a specified interface (optional)*
 
 `python3 hashcracker.py --n 00:11:22:33:44:55 --i eth0`
+
+## ARP Spoofer
+
+*Spoof your target IP with your source IP*
+
+`python3 arpspoofer.py --dst 192.168.1.2 --src 192.168.1.5`
