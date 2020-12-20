@@ -33,14 +33,14 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--src", help="The source IP you want to spoof.", type=str, required=True)
     parser.add_argument("--dst", help="The target IP you want to spoof.", type=str, required=True)
-    parser.add_argument("--sleep", help="Sleep intervals between each packet. Default is 1 second.", type=int, required=False)
+    parser.add_argument("--sleep", help="Sleep intervals between each packet. Default is 0.", type=int, required=False)
 
     args = parser.parse_args()
 
     src = args.src
     dst = args.dst
 
-    sleep = 1
+    sleep = 0
     if args.sleep != None:
         sleep = args.sleep
 
@@ -48,7 +48,7 @@ def main():
         print("Invalid IP address.")
         sys.exit(2)
     
-    max_err = 100
+    max_err = 1000
     print("Spoofing...")
     try:
         while True:
