@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import hashlib, sys, argparse, time
 from os import path
@@ -156,4 +156,4 @@ if __name__ == "__main__":
         print("Elapsed: ", round(end_time - start_time, 3), "seconds")
     except KeyboardInterrupt:
         print("Interrupted")
-        sys.exit(1) 
+        sys.exit(1)
