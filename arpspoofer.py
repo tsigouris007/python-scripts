@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys, argparse, socket, time
 import scapy.all as scapy
