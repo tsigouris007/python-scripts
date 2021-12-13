@@ -109,3 +109,10 @@ Usage examples:
 *Spoof your target IP with your source IP*
 
 `python3 arpspoofer.py --dst 192.168.1.2 --src 192.168.1.5`
+
+### Remote Execute
+
+*Executes specified commands remotely to specified hosts*
+
+`python3 remote_execute.py -i test.com -c whoami -u root`
+`python3 remote_execute.py -i hosts.txt -c cmds.txt -u www-data`
