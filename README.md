@@ -115,4 +115,5 @@ Usage examples:
 *Executes specified commands remotely to specified hosts*
 
 `python3 remote_execute.py -i test.com -c whoami -u root`
+
 `python3 remote_execute.py -i hosts.txt -c cmds.txt -u www-data`
