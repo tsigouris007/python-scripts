@@ -128,6 +128,14 @@ Usage examples:
 
 *Sniff plaintext credentials on a specified interface, protocol and port for simple protocols*
 
+*This works for HTTP too but you might have some increased output due to headers such as User-Agent* 
+
 `python3 credsniff.py -p 21`
 
 `python3 credsniff.py -i eth0 -p 21 -t tcp`
+
+### HTTP Credential Sniff
+
+*Sniff plaintext credentials on a specified interface for HTTP requests only*
+
+`python3 credsniff_http.py -i eth0`
