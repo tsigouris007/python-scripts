@@ -64,7 +64,7 @@ Usage examples:
 
 **Available methods md5, sha1, sha256, sha512**
 
-`python hashcracker.py --hash 21232f297a57a5a743894a0e4a801fc3 --method md5 --list userlist.txt`
+`python3 hashcracker.py --hash 21232f297a57a5a743894a0e4a801fc3 --method md5 --list userlist.txt`
 
 *Returns a successful plaintext string if cracked*
 
@@ -88,21 +88,21 @@ Usage examples:
 
 *Display your current MAC Address*
 
-`python3 hashcracker.py`
+`python3 macchanger.py`
 
-`python3 hashcracker.py --c`
+`python3 macchanger.py -c`
 
 *Specify an interface*
 
-`python3 hashcracker.py --c --i eth0`
+`python3 macchanger.py -c -i eth0`
 
 *Generate a Random MAC Address on a specified interface (optional)*
 
-`python3 hashcracker.py --r --i eth0`
+`python3 macchanger.py -r -i eth0`
 
 *Manually set a MAC Address on a specified interface (optional)*
 
-`python3 hashcracker.py --n 00:11:22:33:44:55 --i eth0`
+`python3 macchanger.py -n 00:11:22:33:44:55 -i eth0`
 
 ## ARP Spoofer
 
@@ -117,3 +117,17 @@ Usage examples:
 `python3 remote_execute.py -i test.com -c whoami -u root`
 
 `python3 remote_execute.py -i hosts.txt -c cmds.txt -u www-data`
+
+### MAC Sniff
+
+*Sniff traffic and revolve source and destination MAC addresses from packets*
+
+`python3 macsniff.py`
+
+### Credential Sniff
+
+*Sniff plaintext credentials on a specified interface, protocol and port for simple protocols*
+
+`python3 credsniff.py -p 21`
+
+`python3 credsniff.py -i eth0 -p 21 -t tcp`
