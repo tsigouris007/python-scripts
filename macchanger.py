@@ -37,10 +37,10 @@ def validate_mac(mac):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--i", help="The interface you want to change its MAC address. Default is eth0.", type=str, required=False)
-    parser.add_argument("--c", help="Print your current MAC address. Halts any other processing.", action="store_true", required=False)
-    parser.add_argument("--r", help="Generate a random MAC address to the specified interface. Does not work with --n.", action="store_true", required=False)
-    parser.add_argument("--n", help="Manually change a MAC address to the specified interface. Does not work with --r.", type=str, required=False)
+    parser.add_argument("-i", help="The interface you want to change its MAC address. Default is eth0.", type=str, required=False)
+    parser.add_argument("-c", help="Print your current MAC address. Halts any other processing.", action="store_true", required=False)
+    parser.add_argument("-r", help="Generate a random MAC address to the specified interface. Does not work with --n.", action="store_true", required=False)
+    parser.add_argument("-n", help="Manually change a MAC address to the specified interface. Does not work with --r.", type=str, required=False)
 
     args = parser.parse_args()
 
