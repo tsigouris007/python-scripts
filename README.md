@@ -139,3 +139,15 @@ Usage examples:
 *Sniff plaintext credentials on a specified interface for HTTP requests only*
 
 `python3 credsniff_http.py -i eth0`
+
+### DNS Sniff
+
+*Sniff all DNS queries performed on the specified interface*
+
+`python3 dns_sniff.py -i eth0`
+
+### Keylogger
+
+*Capture keystrokes and send them to a ping back URL. You need to specify the URL inside the script.*
+
+`python3 keylogger.py`
