@@ -154,10 +154,9 @@ Usage examples:
 
 ### C2
 
-The c2 directory contains a POC backdoor example using a server and a reverse shell. You can modify the server
-port according to your needs or by passing arguments.
+The c2 directory contains a POC backdoor example using a server and a reverse shell. You can modify the server + reverse shell port port according to your needs or by passing arguments. \
 You can execute commands as you would do in an msf shell for example.
-Additionally you can `download`, `upload`, `cd` to any directory and `exit` the shell. \
+Additionally you can `download`, `upload`, `cd` to any directory and `exit` the shell.
 
 Usage example: \
 **Server** \
