@@ -110,7 +110,7 @@ Usage examples:
 
 `python3 arpspoofer.py --dst 192.168.1.2 --src 192.168.1.5`
 
-### Remote Execute
+## Remote Execute
 
 *Executes specified commands remotely to specified hosts*
 
@@ -118,13 +118,13 @@ Usage examples:
 
 `python3 remote_execute.py -i hosts.txt -c cmds.txt -u www-data`
 
-### MAC Sniff
+## MAC Sniff
 
 *Sniff traffic and revolve source and destination MAC addresses from packets*
 
 `python3 macsniff.py`
 
-### Credential Sniff
+## Credential Sniff
 
 *Sniff plaintext credentials on a specified interface, protocol and port for simple protocols*
 
@@ -134,25 +134,25 @@ Usage examples:
 
 `python3 credsniff.py -i eth0 -p 21 -t tcp`
 
-### HTTP Credential Sniff
+## HTTP Credential Sniff
 
 *Sniff plaintext credentials on a specified interface for HTTP requests only*
 
 `python3 credsniff_http.py -i eth0`
 
-### DNS Sniff
+## DNS Sniff
 
 *Sniff all DNS queries performed on the specified interface*
 
 `python3 dns_sniff.py -i eth0`
 
-### Keylogger
+## Keylogger
 
 *Capture keystrokes and send them to a ping back URL. You need to specify the URL inside the script.*
 
 `python3 keylogger.py`
 
-### C2
+## C2
 
 The c2 directory contains a POC backdoor example using a server and a reverse shell. You can modify the server + reverse shell port port according to your needs or by passing arguments. \
 You can execute commands as you would do in an msf shell for example.
@@ -165,7 +165,7 @@ Usage example: \
 **Reverse Shell** \
 `python3 rev_shell.py -p 8080 -i 0.0.0.0`
 
-### GMail SMTP Brute
+## GMail SMTP Brute
 
 *Bruteforce GMail accounts via SMTP*
 
